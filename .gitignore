@@ -1,4 +1,6 @@
+# ----------------------------
 # Logs
+# ----------------------------
 logs
 *.log
 npm-debug.log*
@@ -7,32 +9,42 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# ----------------------------
+# Node.js / React (frontend)
+# ----------------------------
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Spring Boot build output
+# ----------------------------
+# Spring Boot (backend)
+# ----------------------------
 target/
 *.jar
 *.war
-*.log
 
-# IntelliJ IDEA files
+# ----------------------------
+# IntelliJ IDEA / JetBrains
+# ----------------------------
 .idea/
 *.iml
+*.ipr
+*.iws
 
-# OS system files
+# ----------------------------
+# VS Code
+# ----------------------------
+.vscode/
+!.vscode/extensions.json
+
+# ----------------------------
+# System files
+# ----------------------------
 .DS_Store
 Thumbs.db
+
+# ----------------------------
+# Project specific
+# ----------------------------
+.history
