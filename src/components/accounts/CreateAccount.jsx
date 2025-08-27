@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { createAccount } from "../services/accountService";
+import { createAccount } from "../../services/accountService";
 import { useNavigate } from "react-router-dom";
-import useFormSubmit from "../hooks/useFormSubmit";
+import useFormSubmit from "../../hooks/useFormSubmit";
 
 const CreateAccount = () => {
   const initialFormState = {

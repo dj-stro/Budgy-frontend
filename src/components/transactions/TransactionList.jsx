@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getTransactionsByUserIds } from "../services/transactionService";
-import { useUser } from "../contexts/UserContext";
+import { getTransactionsByUserIds } from "../../services/transactionService";
+import { useUser } from "../../contexts/UserContext";
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createCategory } from "../services/categoryService";
+import { createCategory } from "../../services/categoryService";
 
 const CreateCategory = () => {
   const [formData, setFormData] = useState({
