@@ -12,7 +12,7 @@ const CreateAccount = () => {
     budgetAvailable: 0,
     budgetAllowed: 0,
     user: {
-      id: 1, // Send user as an object
+      id: "", // Send user as an object
     }, // hardcoded for now
   };
 

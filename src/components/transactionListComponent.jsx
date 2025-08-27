@@ -1,33 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { getTransactionsByUserIds } from "../services/transactionService";
+import { useUser } from "../contexts/UserContext";
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
   const [txLoading, setTxLoading] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState("");
 
-  // Fetch users on mount
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch("http://localhost:8080/api/users");
-        const data = await res.json();
-        setUsers(data);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      }
-    };
-    fetchUsers();
-  }, []);
+  const { currentUser } = useUser();
 
   // Fetch transactions for selected user
   useEffect(() => {
-    if (!currentUserId) return;
+    if (!currentUser) return;
+
     const fetchTransactions = async () => {
       setTxLoading(true);
       try {
-        const data = await getTransactionsByUserIds([currentUserId]);
+        const data = await getTransactionsByUserIds([currentUser.id]);
         setTransactions(data || []);
       } catch (err) {
         console.error("Error fetching user transactions:", err);
@@ -35,12 +23,9 @@ const TransactionList = () => {
         setTxLoading(false);
       }
     };
-    fetchTransactions();
-  }, [currentUserId]);
 
-  const handleChange = (event) => {
-    setCurrentUserId(event.target.value);
-  };
+    fetchTransactions();
+  }, [currentUser]);
 
   const formatDate = (dateString) =>
     dateString ? new Date(dateString).toISOString().split("T")[0] : "—";
@@ -53,24 +38,18 @@ const TransactionList = () => {
         })
       : "—";
 
+  if (!currentUser) {
+    return (
+      <div className="container-fluid main-content">
+        <h2>Transactions</h2>
+        <p>Please select a user from the dropdown above.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container-fluid main-content">
-      <h2>Transactions</h2>
-
-      <div className="container-fluid mb-3">
-        {users.length === 0 ? (
-          <p>No users found.</p>
-        ) : (
-          <select value={currentUserId} onChange={handleChange}>
-            <option value="">-- Select User --</option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.username}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+      <h2>Transactions for {currentUser.username}</h2>
 
       {txLoading ? (
         <p>Loading transactions...</p>

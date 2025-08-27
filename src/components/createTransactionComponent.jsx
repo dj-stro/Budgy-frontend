@@ -4,10 +4,13 @@ import { getAllCategories } from "../services/categoryService";
 import { getAllAccounts } from "../services/accountService";
 import { useNavigate } from "react-router-dom";
 import useFormSubmit from "../hooks/useFormSubmit";
+import { useUser } from "../contexts/UserContext";
 
 const today = new Date().toISOString().split("T")[0];
 
 const CreateTransaction = () => {
+  const { currentUser } = useUser();
+
   const initialFormState = {
     description: "",
     amount: "",
@@ -16,7 +19,7 @@ const CreateTransaction = () => {
     categoryId: "",
     accountFromId: "",
     accountToId: "",
-    userId: 1, // hardcoded for now
+    userId: "",
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -25,6 +28,12 @@ const CreateTransaction = () => {
   const navigate = useNavigate();
 
   const resetForm = () => setFormData(initialFormState);
+
+  useEffect(() => {
+    if (currentUser) {
+      setFormData((prev) => ({ ...prev, userId: currentUser.id }));
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     const fetchData = async () => {
