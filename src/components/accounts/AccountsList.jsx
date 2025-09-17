@@ -50,7 +50,6 @@ const AccountList = () => {
             <th>Description</th>
             <th>Balance</th>
             <th>Budget</th>
-            <th>Budget Avail.</th>
             <th>Budget Allowed</th>
             <th>User</th>
           </tr>
@@ -63,7 +62,6 @@ const AccountList = () => {
               <td>{acc.description}</td>
               <td>{formatAmount(acc.balance)}</td>
               <td>{formatAmount(acc.budgetBalance)}</td>
-              <td>{formatAmount(acc.budgetAvailable)}</td>
               <td>{formatAmount(acc.budgetAllowed)}</td>
               <td>{acc.user?.username || acc.user?.id || "—"}</td>
             </tr>

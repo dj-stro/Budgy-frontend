@@ -9,7 +9,6 @@ const CreateAccount = () => {
     description: "",
     balance: 0,
     budgetBalance: 0,
-    budgetAvailable: 0,
     budgetAllowed: 0,
     user: {
       id: "", // Send user as an object
@@ -87,19 +86,6 @@ const CreateAccount = () => {
             className="form-control"
             name="budgetBalance"
             value={formData.budgetBalance}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group mb-2">
-          <label>Budget Available:</label>
-          <input
-            type="number"
-            step="0.01"
-            className="form-control"
-            name="budgetAvailable"
-            value={formData.budgetAvailable}
             onChange={handleChange}
             required
           />
