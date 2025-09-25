@@ -14,6 +14,23 @@ export const HeaderComponent = () => {
       <a className="navbar-brand budgyLogo" href="/">
         bUDGY
       </a>
+      {/* User selector */}
+      <div className="ms-auto">
+        {users.length > 0 && (
+          <select
+            className="form-select"
+            style={{ width: "180px" }}
+            value={currentUser?.id || ""}
+            onChange={handleChange}
+          >
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.username}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
       <button
         className="navbar-toggler"
         type="button"
@@ -53,23 +70,7 @@ export const HeaderComponent = () => {
           </li>
         </ul>
       </div>
-      {/* User selector on the right */}
-      <div className="ms-auto">
-        {users.length > 0 && (
-          <select
-            className="form-select"
-            style={{ width: "180px" }}
-            value={currentUser?.id || ""}
-            onChange={handleChange}
-          >
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.username}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+      
     </nav>
   );
 };

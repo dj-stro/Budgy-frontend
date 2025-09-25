@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getTransactionsByUserIds } from "../../services/transactionService";
 import { useUser } from "../../contexts/UserContext";
+import CategoryUsage from "../charts/CategoryUsage";
+import BalanceUsage from "../charts/BalanceUsage";
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
@@ -51,38 +53,51 @@ const TransactionList = () => {
     <div className="container-fluid main-content">
       <h2>Transactions for {currentUser.username}</h2>
 
-      {txLoading ? (
-        <p>Loading transactions...</p>
-      ) : transactions.length === 0 ? (
-        <p>No transactions found.</p>
-      ) : (
-        <table className="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Date</th>
-              <th>Category</th>
-              <th>Account From</th>
-              <th>Account To</th>
-              <th>Description</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((txn) => (
-              <tr key={txn.id}>
-                <td>{txn.id}</td>
-                <td>{formatDate(txn.date)}</td>
-                <td>{txn.category?.name || "—"}</td>
-                <td>{txn.accountFrom?.name || "—"}</td>
-                <td>{txn.accountTo?.name || "—"}</td>
-                <td>{txn.description || "—"}</td>
-                <td>{formatAmount(txn.amount)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <div className="row">
+        <div className="col-md-6">
+          {txLoading ? (
+            <p>Loading transactions...</p>
+          ) : transactions.length === 0 ? (
+            <p>No transactions found.</p>
+          ) : (
+            <table className="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Account From</th>
+                  <th>Account To</th>
+                  <th>Description</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map((txn) => (
+                  <tr key={txn.id}>
+                    <td>{txn.id}</td>
+                    <td>{formatDate(txn.date)}</td>
+                    <td>{txn.category?.name || "—"}</td>
+                    <td>{txn.accountFrom?.name || "—"}</td>
+                    <td>{txn.accountTo?.name || "—"}</td>
+                    <td>{txn.description || "—"}</td>
+                    <td>{formatAmount(txn.amount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        <div className="col-md-6 d-flex flex-column align-items-center justify-content-start">
+          <div className="w-100 mb-4" style={{ height: "400px" }}>
+            <CategoryUsage />
+          </div>
+          <div className="w-100" style={{ height: "400px" }}>
+            <BalanceUsage />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
