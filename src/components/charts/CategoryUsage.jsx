@@ -45,7 +45,7 @@ const CategoryUsage = () => {
             cy="50%"
             outerRadius={120}
             dataKey="value"
-            label={renderCustomLabel} // ✅ custom labels
+            label={renderCustomLabel} 
           >
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

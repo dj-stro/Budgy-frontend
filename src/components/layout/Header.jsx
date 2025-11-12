@@ -1,5 +1,6 @@
 import React from "react";
 import { useUser } from "../../contexts/UserContext";
+import MonthSelectorDropdown from "../ui/MonthSelectorDropdown";
 
 export const HeaderComponent = () => {
   const { users, currentUser, setCurrentUser } = useUser();
@@ -10,15 +11,19 @@ export const HeaderComponent = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
       <a className="navbar-brand budgyLogo" href="/">
         bUDGY
       </a>
-      {/* User selector */}
-      <div className="ms-auto">
+
+      <div className="ms-auto d-flex align-items-center">
+        {/* Month selector dropdown */}
+        <MonthSelectorDropdown />
+
+        {/* User selector */}
         {users.length > 0 && (
           <select
-            className="form-select"
+            className="form-select ms-2"
             style={{ width: "180px" }}
             value={currentUser?.id || ""}
             onChange={handleChange}
@@ -31,46 +36,6 @@ export const HeaderComponent = () => {
           </select>
         )}
       </div>
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div
-        className="collapse navbar-collapse justify-content-center"
-        id="navbarNavAltMarkup"
-      >
-        <ul className="navbar-nav">
-          <li className="nav-item">
-            <button type="button" className="btn btn-primary">
-              <a className="nav-link" href="/addTransaction">
-                Add Txn
-              </a>
-            </button>
-          </li>
-          <li className="nav-item">
-            <button type="button" className="btn btn-primary">
-              <a className="nav-link" href="/addCategory">
-                Categories
-              </a>
-            </button>
-          </li>
-          <li className="nav-item">
-            <button type="button" className="btn btn-primary">
-              <a className="nav-link" href="/accounts">
-                Accounts
-              </a>
-            </button>
-          </li>
-        </ul>
-      </div>
-      
     </nav>
   );
 };
