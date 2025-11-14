@@ -1,5 +1,8 @@
-import { useState } from "react";
-import { createCategory } from "../../services/categoryService";
+import { useState, useEffect } from "react";
+import {
+  createCategory,
+  getAllCategories,
+} from "../../services/categoryService";
 
 const CreateCategory = () => {
   const [formData, setFormData] = useState({
@@ -7,8 +10,15 @@ const CreateCategory = () => {
     type: "EXPENSE",
   });
 
+  const [categories, setCategories] = useState([]);
+
   const handleChange = (e) => {
-    console.log("handleChange:", e.target.name, e.target.value, typeof e.target.value);
+    console.log(
+      "handleChange:",
+      e.target.name,
+      e.target.value,
+      typeof e.target.value
+    );
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -26,6 +36,22 @@ const CreateCategory = () => {
         alert("Failed to create category.");
       });
   };
+
+  const loadCategories = () => {
+  getAllCategories()
+    .then((data) => {
+      console.log("API response:", data);
+      setCategories(data || []); // prevent undefined
+    })
+    .catch((err) => {
+      console.error("Failed to load categories:", err);
+      setCategories([]); // safe fallback
+    });
+};
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   return (
     <div className="container mt-4">
@@ -62,6 +88,21 @@ const CreateCategory = () => {
           Save Category
         </button>
       </form>
+      {/* CATEGORY LIST */}
+      <div className="mt-4">
+        <h4>Existing Categories</h4>
+        <ul className="list-group">
+          {categories.map((cat) => (
+            <li
+              key={cat.id}
+              className="list-group-item d-flex justify-content-between"
+            >
+              <span>{cat.name}</span>
+              <span className="badge bg-secondary">{cat.type}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
