@@ -1,25 +1,15 @@
-import api from "../api/axios";
-
-const REST_API_BASE_URL = "/api/accounts";
-
-// Get all accounts for a user
-export const getAccountsByUserId = async (userId) => {
-  const response = await api.get(`${REST_API_BASE_URL}?userId=${userId}`);
-  return response.data;
-};
-
-// Get a single account by ID
-export const getAccountById = async (accountId) => {
-  const response = await api.get(`${REST_API_BASE_URL}/${accountId}`);
-  return response.data;
-};
+import { getDB } from "../db/db";
 
 export const getAllAccounts = async () => {
-  const response = await api.get(REST_API_BASE_URL);
-  return response.data;
+  const db = getDB();
+  const res = await db.query("SELECT * FROM accounts;");
+  return res.values;
 };
 
 export const createAccount = async (account) => {
-  const response = await api.post(REST_API_BASE_URL, account);
-  return response.data;
+  const db = getDB();
+  await db.run(
+    "INSERT INTO accounts (name, balance) VALUES (?, ?);",
+    [account.name, account.balance]
+  );
 };

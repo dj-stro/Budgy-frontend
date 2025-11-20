@@ -1,113 +1,52 @@
 import React, { useState } from "react";
-import { createAccount } from "../../services/accountService";
-import { useNavigate } from "react-router-dom";
-import useFormSubmit from "../../hooks/useFormSubmit";
+import { useAccounts } from "../../contexts/AccountContext";
 
 const CreateAccount = () => {
-  const initialFormState = {
-    name: "",
-    description: "",
-    balance: 0,
-    budgetBalance: 0,
-    budgetAllowed: 0,
-    user: {
-      id: "", // Send user as an object
-    }, // hardcoded for now
+  const { createAccount, accounts } = useAccounts();
+  const [name, setName] = useState("");
+  const [balance, setBalance] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name) return;
+    await createAccount(name, parseFloat(balance) || 0);
+    setName("");
+    setBalance("");
   };
-
-  const [formData, setFormData] = useState(initialFormState);
-  const navigate = useNavigate();
-
-  const resetForm = () => setFormData(initialFormState);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const { handleSubmit } = useFormSubmit({
-    submitFunction: createAccount,
-    onSuccess: () => {
-      alert("Account Created!");
-      resetForm();
-      //Navigate to accounts list
-      navigate("/accounts");
-    },
-    onError: () => alert("Failed to create account!"),
-    resetForm,
-  });
 
   return (
     <div className="container mt-4">
-      <h2>Add New Account</h2>
-      <form onSubmit={(e) => handleSubmit(e, formData)}>
-        <div className="form-group mb-2">
-          <label>Name:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group mb-2">
-          <label>Description:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group mb-2">
-          <label>Balance:</label>
-          <input
-            type="number"
-            step="0.01"
-            className="form-control"
-            name="balance"
-            value={formData.balance}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group mb-2">
-          <label>Budget Balance:</label>
-          <input
-            type="number"
-            step="0.01"
-            className="form-control"
-            name="budgetBalance"
-            value={formData.budgetBalance}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group mb-2">
-          <label>Budget Allowed:</label>
-          <input
-            type="number"
-            step="0.01"
-            className="form-control"
-            name="budgetAllowed"
-            value={formData.budgetAllowed}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-success mt-3">
+      <h2>Add Account</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={name}
+          placeholder="Account name"
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <input
+          type="number"
+          value={balance}
+          placeholder="Initial balance"
+          onChange={(e) => setBalance(e.target.value)}
+        />
+        <button className="btn btn-primary mt-2" type="submit">
           Save Account
         </button>
       </form>
+
+      <ul className="mt-3">
+        {accounts.map((a) => (
+          <li key={a.id}>
+            {a.name} —{" "}
+            {a.balance?.toLocaleString("en-ZA", {
+              style: "currency",
+              currency: "ZAR",
+            })}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

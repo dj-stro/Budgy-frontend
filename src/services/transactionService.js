@@ -1,86 +1,28 @@
-import api from '../api/axios';
+import { getDB } from "../db/db";
 
-const REST_API_BASE_URL = '/api/transactions';
-
-// Get all transactions
 export const getAllTransactions = async () => {
-  const response = await api.get(REST_API_BASE_URL);
-  console.log(response.data);
-  return response.data;
+  const db = getDB();
+  const res = await db.query(`
+    SELECT t.id, t.amount, t.date, t.description,
+           c.name AS categoryName, a.name AS accountName
+    FROM transactions t
+    LEFT JOIN categories c ON t.category_id = c.id
+    LEFT JOIN accounts a ON t.account_id = a.id
+    ORDER BY t.date DESC;
+  `);
+  return res.values;
 };
 
-// Get transactions for a single user
-export const getAllUserTransactions = async (userId) => {
-  const response = await api.get(`${REST_API_BASE_URL}/user/${userId}`);
-  console.log(response.data);
-  return response.data;
+export const createTransaction = async (transaction) => {
+  const db = getDB();
+  await db.run(
+    "INSERT INTO transactions (account_id, category_id, amount, date, description) VALUES (?, ?, ?, ?, ?);",
+    [
+      transaction.account_id,
+      transaction.category_id,
+      transaction.amount,
+      transaction.date,
+      transaction.description
+    ]
+  );
 };
-
-// Get transactions for multiple users
-// export const getTransactionsByUserIds = async (userIds = []) => {
-//   if (!userIds.length) return [];
-
-//   try {
-//     // Axios automatically serializes arrays correctly for Spring Boot
-//     const response = await api.get(`${REST_API_BASE_URL}/users`, {
-//       params: { userIds },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching transactions:", error);
-//     throw error;
-//   }
-// };
-
-// Get transactions for multiple users
-export const getTransactionsByUserIds = async (userIds = []) => {
-  if (!userIds.length) return [];
-
-  try {
-    // Axios automatically serializes arrays as userIds=1&userIds=2
-    const response = await api.get('/api/transactions/users', {
-      params: { userIds }, 
-      paramsSerializer: params => {
-        // Ensure Axios uses Spring-friendly format
-        return Object.keys(params)
-          .map(key => 
-            params[key].map(val => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`).join('&')
-          )
-          .join('&');
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching transactions:", error);
-    throw error;
-  }
-};
-
-
-
-export const createTransaction = async (txn) => {
-  const response = await api.post("/api/transactions", {
-    description: txn.description,
-    amount: txn.amount,
-    date: txn.date,
-    type: txn.type,
-    accountFrom: txn.accountFromId ? { id: txn.accountFromId } : null,
-    accountTo: txn.accountToId ? { id: txn.accountToId } : null,
-    category: { id: txn.categoryId },
-    user: { id: txn.userId },
-  });
-  return response.data;
-};
-
-
-
-
-export const getTransaction = async (transaction_id) => {
-    const response = await api.get(REST_API_BASE_URL + "/" + transaction_id)
-    return response.data;
-}
-
-export const deleteTransaction = async (transaction_id) => {
-    const response = await api.delete(REST_API_BASE_URL + "/" + transaction_id)
-    return response.data;
-}

@@ -1,86 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { getAllAccounts } from "../../services/accountService";
+import { getAccounts } from "../../services/sqliteService";
 
 const AccountList = () => {
   const [accounts, setAccounts] = useState([]);
-  const [loading, setLoading] = useState([true]);
 
   useEffect(() => {
-    getAllAccounts()
-      .then((data) => {
-        setAccounts(data || []);
-      })
-      .catch((err) => {
-        console.error("Error fetching accounts:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const load = async () => {
+      setAccounts(await getAccounts());
+    };
+    load();
   }, []);
 
-  if (loading) {
-    return <div className="container-fluid main-content">Loading...</div>;
-  }
-
-  if (accounts.length === 0) {
-    return (
-      <div className="container-fluid main-content">
-        <h2>Accounts</h2>
-        <p>No accounts found!</p>
-      </div>
-    );
-  }
-
-  const formatAmount = (amount) => {
-    if (amount == null) return "—";
-    return Number(amount).toLocaleString("en-ZA", {
-      style: "currency",
-      currency: "ZAR",
-    });
-  };
-
   return (
-    <div className="container-fluid main-content">
+    <div className="container mt-4">
       <h2>Accounts</h2>
-      <table className="table table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Balance</th>
-            <th>Budget</th>
-            <th>Budget Allowed</th>
-            <th>User</th>
-          </tr>
-        </thead>
-        <tbody>
-          {accounts.map((acc) => (
-            <tr key={acc.id}>
-              <td>{acc.id}</td>
-              <td>{acc.name}</td>
-              <td>{acc.description}</td>
-              <td>{formatAmount(acc.balance)}</td>
-              <td>{formatAmount(acc.budgetBalance)}</td>
-              <td>{formatAmount(acc.budgetAllowed)}</td>
-              <td>{acc.user?.username || acc.user?.id || "—"}</td>
-            </tr>
+      {accounts.length === 0 ? (
+        <p>No accounts found.</p>
+      ) : (
+        <ul className="list-group">
+          {accounts.map((a) => (
+            <li key={a.id} className="list-group-item">
+              {a.name} ({a.type}) — {a.balance}
+            </li>
           ))}
-        </tbody>
-      </table>
-      <div className="container-fluid">
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-          <ul className="navbar-nav">
-          <li className="nav-item">
-            <button type="button" className="btn btn-primary">
-              <a className="nav-link" href="/addAccount">
-                Add New Account
-              </a>
-            </button>
-          </li>
         </ul>
-        </nav>
-      </div>
+      )}
     </div>
   );
 };

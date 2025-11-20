@@ -1,13 +1,15 @@
-import api from "../api/axios";
-
-const REST_API_BASE_URL = "/api/categories";
+import { getDB } from "../db/db";
 
 export const getAllCategories = async () => {
-  const response = await api.get(REST_API_BASE_URL);
-  return response.data;
+  const db = getDB();
+  const res = await db.query("SELECT * FROM categories;");
+  return res.values; // array of categories
 };
 
 export const createCategory = async (category) => {
-  const response = await api.post(REST_API_BASE_URL, category);
-  return response.data;
+  const db = getDB();
+  await db.run("INSERT INTO categories (name, type) VALUES (?, ?);", [
+    category.name,
+    category.type,
+  ]);
 };
