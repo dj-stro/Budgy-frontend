@@ -1,0 +1,67 @@
+import { useState } from "react";
+
+const initialFormData = {
+  name: "",
+  type: "EXPENSE",
+};
+
+const CategoryForm = ({ onSubmit, isSubmitting }) => {
+  const [formData, setFormData] = useState(initialFormData);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.name.trim()) {
+      alert("Category name is required.");
+      return;
+    }
+    // Pass the data up to the parent component
+    onSubmit(formData, () => setFormData(initialFormData)); // Pass a callback to clear the form
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group mb-2">
+          <label>Category Name</label>
+          <input
+            type="text"
+            className="form-control"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group mb-2">
+          <label>Type</label>
+          <select
+            className="form-control"
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+          >
+            <option value="INCOME">Income</option>
+            <option value="EXPENSE">Expense</option>
+            <option value="ASSET">Asset</option>
+            <option value="LIABILITY">Liability</option>
+            <option value="EQUITY">Equity</option>
+            <option value="TRANSFER">Transfer</option>
+          </select>
+        </div>
+      </form>
+      <button
+        type="submit"
+        className="btn btn-success mt-3"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Saving..." : "Save Category"}
+      </button>
+    </>
+  );
+};
+
+export default CategoryForm;
