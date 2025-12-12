@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { createTransaction } from "../../services/transactionService";
+import { createTransaction } from "../../services/transactionService.js";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
-import { useTransactionFormData } from "../../hooks/useTransactionFormData"; // New Hook
+import { useUser } from "../../contexts/UserContext.js";
+import { useTransactionFormData } from "../../hooks/useTransactionFormData.js";
+import type { Account, CategoryType, TransactionCreationPayload, TransactionFormInputs, User } from "../../types/models.js"
 
 const today = new Date().toISOString().split("T")[0];
 
 // --- Validation Schema with Transfer Check ---
-const transactionSchema = yup.object().shape({
+const transactionSchema: yup.ObjectSchema<TransactionFormInputs> = yup.object().shape({
   description: yup.string().required("Description is required"),
   amount: yup
     .number()
     .typeError("Amount must be a number")
     .positive("Amount must be greater than zero")
     .required("Amount is required"),
-  date: yup.date().required("Date is required"),
+  date: yup.string().required("Date is required"),
   type: yup
     .string()
     .oneOf(["INCOME", "EXPENSE", "TRANSFER"])
@@ -26,14 +27,14 @@ const transactionSchema = yup.object().shape({
   // Category is only required for INCOME and EXPENSE, NOT TRANSFER (if transfer is category-less)
   // Assuming Category is required for all, including TRANSFER
   categoryId: yup.string().required("Category is required"),
-
+  userId: yup.string().required("User ID is required for form submission logic"),
   accountFromId: yup.string().when("type", {
-    is: (val) => val === "EXPENSE" || val === "TRANSFER",
+    is: (val: any) => val === "EXPENSE" || val === "TRANSFER",
     then: (schema) => schema.required("Account From is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
   accountToId: yup.string().when("type", {
-    is: (val) => val === "INCOME" || val === "TRANSFER",
+    is: (val: any) => val === "INCOME" || val === "TRANSFER",
     then: (schema) => schema.required("Account To is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
@@ -54,37 +55,44 @@ const transactionSchema = yup.object().shape({
   }),
 });
 
-const CreateTransaction = () => {
-  const { currentUser } = useUser();
+const CreateTransaction: React.FC = () => {
+  const { currentUser } = useUser() as { currentUser: User | null};
   const navigate = useNavigate();
 
   // 1. Use Custom Hook for Data Fetching
   const { categories, accounts, dataLoading, dataError } =
-    useTransactionFormData();
+    useTransactionFormData() as {
+      categories: CategoryType[],
+      accounts: Account[],
+      dataLoading: boolean,
+      dataError: string
+    };
 
   const [loading, setLoading] = useState(false); // Submission loading
   const [serverError, setServerError] = useState("");
 
   const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(transactionSchema),
-    defaultValues: {
-      description: "",
-      amount: "",
-      date: today,
-      type: "EXPENSE",
-      categoryId: "",
-      accountFromId: "",
-      accountToId: "",
-      userId: currentUser?.id || "",
-    },
-  });
+  register,
+  handleSubmit,
+  setValue,
+  watch,
+  reset,
+  formState: { errors },
+} = useForm<TransactionFormInputs>({
+  resolver: yupResolver(transactionSchema) as any,
+  defaultValues: {
+    // Required fields are set to a value that matches the required type
+    description: "",
+    amount: "",
+    date: today, 
+    type: "EXPENSE",
+    categoryId: "",
+    userId: currentUser?.id || "",
+    accountFromId: undefined,
+    accountToId: undefined,
+    transferCheck: undefined,
+  } as TransactionFormInputs, 
+});
 
   const transactionType = watch("type"); // dynamically watch transaction type
 
@@ -94,7 +102,7 @@ const CreateTransaction = () => {
   }, [currentUser, setValue]);
 
   // Submit handler
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<TransactionFormInputs> = async (data) => {
     setLoading(true);
     setServerError("");
 
@@ -111,12 +119,12 @@ const CreateTransaction = () => {
     delete transactionData.transferCheck;
 
     try {
-      await createTransaction(transactionData);
+      await createTransaction(transactionData as TransactionCreationPayload);
       // replace with a Toast notification library
       alert("Transaction Created successfully!");
       reset();
       navigate("/");
-    } catch (err) {
+    } catch (err: any) {
       const message =
         err.response?.data?.message || err.message || "Something went wrong";
       setServerError(message);

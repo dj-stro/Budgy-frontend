@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { getAllAccounts } from "../../services/accountService";
-import AccountRow from "./AccountRow";
+import { getAllAccounts } from "../../services/accountService.js";
+import AccountRow from "./AccountRow.js";
+import type { Account } from "../../types/models.js";
 
 const AccountList = () => {
-  const [accounts, setAccounts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchAccounts = async () => {

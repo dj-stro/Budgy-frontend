@@ -1,7 +1,13 @@
-import Txn from "./Txn";
-import CategoryUsage from "../charts/CategoryUsage";
+import Txn from "./Txn.js";
+import CategoryUsage from "../charts/CategoryUsage.js";
+import type { TransactionModel } from "../../types/models.js";
 
-function TxnList({ filteredTransactions, txLoading }) {
+interface TxnProps {
+  filteredTransactions: TransactionModel[];
+  txLoading: boolean;
+}
+
+function TxnList({ filteredTransactions, txLoading }: TxnProps) {
   return (
     <div className="row">
       <div className="col-md-6">

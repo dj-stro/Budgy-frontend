@@ -1,6 +1,8 @@
-import AccountItem from "./AccountItem";
+import AccountItem from "./AccountItem.js";
+import React from "react";
+import type { AccountRowProps } from "../../types/models.js";
 
-function AccountRow({ accounts }) {
+const AccountRow: React.FC<AccountRowProps> = ({ accounts }) => {
   return (
     <table className="table table-striped table-bordered">
       <thead>
@@ -15,8 +17,8 @@ function AccountRow({ accounts }) {
         </tr>
       </thead>
       <tbody>
-        {accounts.map((acc) => (
-          <AccountItem key={acc.id} acc={acc} />
+        {accounts.map((account) => (
+          <AccountItem key={account.id} acc={account} />
         ))}
       </tbody>
     </table>

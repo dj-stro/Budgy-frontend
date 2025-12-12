@@ -1,4 +1,7 @@
-function CategoryList({ categories }) {
+import React from "react";
+import type { CategoryListProps, CategoryType } from "../../types/models.js";
+
+const CategoryList: React.FC<CategoryListProps> = ({ categories }) => {
   return (
     <div className="mt-4">
       <ul className="list-group">

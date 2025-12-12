@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { getAllCategories } from "../services/categoryService"; 
-import { getAllAccounts } from "../services/accountService";
+import { getAllCategories } from "../services/categoryService.js"; 
+import { getAllAccounts } from "../services/accountService.js";
+import type { Account, CategoryType, TransactionFormData } from "../types/models.js";
 
-export const useTransactionFormData = () => {
-  const [categories, setCategories] = useState([]);
-  const [accounts, setAccounts] = useState([]);
-  const [dataLoading, setDataLoading] = useState(true);
-  const [dataError, setDataError] = useState(null);
+export const useTransactionFormData = (): TransactionFormData => {
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const [dataError, setDataError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {

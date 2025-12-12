@@ -1,16 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
-import { createCategory, getAllCategories } from "../../services/categoryService";
-import CategoryForm from "./CategoryForm"; 
-import CategoryList from "./CategoryList"; 
+import {
+  createCategory,
+  getAllCategories,
+} from "../../services/categoryService.js";
+import CategoryForm from "./CategoryForm.js";
+import CategoryList from "./CategoryList.js";
+import type { CategoryType, CategoryFormData } from "../../types/models.js";
 
 const CreateCategoryPage = () => {
-  const [categories, setCategories] = useState([]);
-  const [listLoading, setListLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [listLoading, setListLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  
   const loadCategories = useCallback(async () => {
     setListLoading(true);
     setError(null);
@@ -28,7 +31,10 @@ const CreateCategoryPage = () => {
     loadCategories();
   }, [loadCategories]);
 
-  const handleCreateCategory = async (categoryData, clearForm) => {
+  const handleCreateCategory = async (
+    categoryData: CategoryFormData,
+    clearForm: () => void
+  ) => {
     setIsSubmitting(true);
     setError(null);
     setSuccessMessage(null);
@@ -37,7 +43,7 @@ const CreateCategoryPage = () => {
       setSuccessMessage("Category created successfully!");
       clearForm(); // Clear the form state in the child component
       loadCategories(); // Refresh the list
-    } catch (err) {
+    } catch (err: any) {
       console.error("Creation error:", err.response?.data || err.message);
       setError("Failed to create category. Please check the name.");
     } finally {
@@ -49,9 +55,14 @@ const CreateCategoryPage = () => {
     <div className="container mt-4">
       <h2>Add New Category</h2>
       {error && <div className="alert alert-danger">{error}</div>}
-      {successMessage && <div className="alert alert-success">{successMessage}</div>}
-      
-      <CategoryForm onSubmit={handleCreateCategory} isSubmitting={isSubmitting} />
+      {successMessage && (
+        <div className="alert alert-success">{successMessage}</div>
+      )}
+
+      <CategoryForm
+        onSubmit={handleCreateCategory}
+        isSubmitting={isSubmitting}
+      />
 
       {/* CATEGORY LIST SECTION */}
       <div className="mt-4">
@@ -59,7 +70,7 @@ const CreateCategoryPage = () => {
         {listLoading ? (
           <p>Loading categories...</p>
         ) : (
-          <CategoryList categories={categories} /> 
+          <CategoryList categories={categories} />
         )}
       </div>
     </div>

@@ -1,10 +1,12 @@
 import React from "react";
+import type { TransactionModel } from "../types/models.js";
+import type { SelectedDatesContextType } from "../contexts/SelectedDatesContext.js";
 
 const useFilteredTransactions = (
-  transactions,
-  selectedYear,
-  selectedMonths
-) => {
+  transactions: TransactionModel[],
+  selectedYear: number,
+  selectedMonths: number[]
+): TransactionModel[] => {
   const filteredTransactions = React.useMemo(() => {
     // ... filtering logic from above ...
     return transactions.filter((txn) => {

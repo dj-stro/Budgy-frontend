@@ -1,7 +1,13 @@
 import React from "react";
-import TxnRow from "./TxnRow";
+import TxnRow from "./TxnRow.js";
+import type { TransactionModel } from "../../types/models.js";
 
-function Txn({ filteredTransactions, txLoading }) {
+interface TxnProps {
+  filteredTransactions: TransactionModel[];
+  txLoading: boolean;
+}
+
+function Txn({ filteredTransactions, txLoading }: TxnProps) {
   return txLoading ? (
     <p>Loading transactions...</p>
   ) : filteredTransactions.length === 0 ? (

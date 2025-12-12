@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { createAccount } from "../../services/accountService";
+import type { ChangeEvent, FormEvent } from "react";
+import { createAccount } from "../../services/accountService.js";
 import { useNavigate } from "react-router-dom";
-import useFormSubmit from "../../hooks/useFormSubmit";
+import useFormSubmit from "../../hooks/useFormSubmit.js";
+import type { AccountFormState } from "../../types/models.js";
 
 const CreateAccount = () => {
-  const initialFormState = {
+  const initialFormState: AccountFormState = {
     name: "",
     description: "",
     balance: 0,
@@ -15,18 +17,18 @@ const CreateAccount = () => {
     }, // hardcoded for now
   };
 
-  const [formData, setFormData] = useState(initialFormState);
+  const [formData, setFormData] = useState<AccountFormState>(initialFormState);
   const navigate = useNavigate();
 
   const resetForm = () => setFormData(initialFormState);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value } as AccountFormState)); // Cast the merged object back to the state type
   };
 
-  const { handleSubmit } = useFormSubmit({
-    submitFunction: createAccount,
+  const { handleSubmit } = useFormSubmit<AccountFormState>({
+    submitFunction: createAccount as (data: AccountFormState) => Promise<any>,
     onSuccess: () => {
       alert("Account Created!");
       resetForm();
@@ -40,7 +42,7 @@ const CreateAccount = () => {
   return (
     <div className="container mt-4">
       <h2>Add New Account</h2>
-      <form onSubmit={(e) => handleSubmit(e, formData)}>
+      <form onSubmit={(e: FormEvent<HTMLFormElement>) => handleSubmit(e, formData)}>
         <div className="form-group mb-2">
           <label>Name:</label>
           <input

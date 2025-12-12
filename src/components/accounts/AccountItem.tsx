@@ -1,9 +1,10 @@
 import React from 'react';
-import { formatAmount } from "../../utils/formatters";
+import { formatAmount } from "../../utils/formatters.js";
+import type { AccountItemProps } from '../../types/models.js';
 
-function AccountItem({ acc }) {
+const AccountItem: React.FC<AccountItemProps> = ({ acc }) => {
   const { id, name, description, balance, budgetBalance, budgetAllowed, user } = acc;
-
+  
   return (
     <tr>
       <td>{id}</td>
@@ -12,9 +13,10 @@ function AccountItem({ acc }) {
       <td>{formatAmount(balance)}</td>
       <td>{formatAmount(budgetBalance)}</td>
       <td>{formatAmount(budgetAllowed)}</td>
-      <td>{user?.username || user?.id || "—"}</td>
+      <td>{user?.name || user?.id || "—"}</td> 
     </tr>
   );
+
 }
 
 export default React.memo(AccountItem);

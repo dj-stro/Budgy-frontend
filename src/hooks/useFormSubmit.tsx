@@ -1,10 +1,25 @@
-import { useCallback } from "react";
+import { useCallback, type FormEvent } from "react";
 
-const useFormSubmit = ({ submitFunction, onSuccess, onError, resetForm }) => {
+/**
+ * TForm: The generic type representing the shape of the form data
+ */
+interface UseFormSubmitProps<TForm> {
+  // submitFunction must accept TForm and return a Promise (like the one returned by axios)
+  submitFunction: (data: TForm) => Promise<any>;
+  onSuccess?: () => void;
+  onError?: (message?: string) => void;
+  resetForm?: () => void;
+}
+
+const useFormSubmit = <TForm extends object>({
+  submitFunction,
+  onSuccess,
+  onError,
+  resetForm,
+}: UseFormSubmitProps<TForm>) => {
   const handleSubmit = useCallback(
-    (e, formData) => {
+    (e: FormEvent<HTMLFormElement>, formData: TForm) => {
       e.preventDefault();
-
       submitFunction(formData)
         .then(() => {
           onSuccess?.();

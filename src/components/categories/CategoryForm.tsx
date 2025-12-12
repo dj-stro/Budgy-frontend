@@ -1,18 +1,40 @@
-import { useState } from "react";
+import React, {useState, type ChangeEvent } from "react";
+import type { CategoryFormData, CategoryFormProps, CategoryTypeValue } from "../../types/models.js";
 
-const initialFormData = {
+const initialFormData: CategoryFormData = {
   name: "",
   type: "EXPENSE",
 };
 
-const CategoryForm = ({ onSubmit, isSubmitting }) => {
-  const [formData, setFormData] = useState(initialFormData);
+type InputElement = HTMLInputElement | HTMLSelectElement;
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, isSubmitting }) => {
+  const [formData, setFormData] = useState<CategoryFormData>(initialFormData);
+
+  const handleChange = (e: React.ChangeEvent<InputElement>): void => {
+    const target = e.currentTarget;
+    const { name, value } = target;
+    
+    setFormData((prevData) => {
+      if (name === 'type') {
+        return {
+          ...prevData,
+          type: value as CategoryTypeValue,
+        };
+      } 
+      if (name === 'name') {
+        return {
+          ...prevData,
+          name: value,
+        };
+      }
+      
+      // Fallback for any other unexpected input (safe return)
+      return prevData;
+    });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!formData.name.trim()) {
       alert("Category name is required.");
