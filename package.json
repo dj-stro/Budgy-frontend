@@ -11,8 +11,6 @@
   },
   "dependencies": {
     "@capacitor/android": "^7.4.4",
-    "@capacitor/cli": "^7.4.4",
-    "@capacitor/core": "^7.4.4",
     "@capacitor/network": "^7.0.2",
     "@hookform/resolvers": "^5.2.1",
     "axios": "^1.10.0",

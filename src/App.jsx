@@ -10,7 +10,6 @@ import { SelectedDatesProvider } from "./contexts/SelectedDatesContext";
 import { HeaderComponent } from "./components/layout/Header";
 import { FooterComponent } from "./components/layout/Footer";
 import { useEffect } from "react";
-import { initNetworkService, registerOnReconnect } from "./services/networkService";
 
 
 import "./App.css";
@@ -19,13 +18,6 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 function App() {
   useEffect(() => {
-  initNetworkService();
-
-  // Register what should happen when the phone reconnects
-  registerOnReconnect(() => {
-    console.log("🟢 Back online → syncing data...");
-    // syncPendingTransactions();
-  });
 
 }, []);
 
